@@ -1,8 +1,10 @@
 #!/bin/bash
 declare -A dict
 declare -A dict1
+declare -A dict2
 dict=(["H"]=0 ["T"]=0)
 dict1=(["HH"]=0 ["TT"]=0 ["TH"]=0 ["HT"]=0)
+dict2=(["TTT"]=0 ["TTH"]=0 ["THT"]=0 ["THH"]=0 ["HTT"]=0 ["HTH"]=0 ["HHT"]=0 ["HHH"]=0)
 read -p "Enter number of times to flip coin:" n
 for (( i=1;i<=$n;i++ ))
 do
@@ -26,6 +28,18 @@ do
 		fi
 	done
         dict1[$key1]=$(( ${dict1[$key1]}+1 ))
+	key2=""
+        for(( j=1;j<=3;j++ ))
+        do
+                flip2=$(( RANDOM%2 ))
+                if [ $flip2 -eq 0 ]
+                then
+                        key2=$key2"T"
+                else
+                        key2=$key2"H"
+                fi
+        done
+        dict2[$key2]=$(( ${dict2[$key2]}+1 ))
 done
 echo "Singlet combination:"
 for index in  ${!dict[@]}
@@ -43,4 +57,11 @@ do
         percentile=`echo $percent 100 | awk '{print $1*$2}'`
         echo "The percentage of $index is "$percentile
 done
-
+echo "Triplet combination:"
+for index in  ${!dict2[@]}
+do
+        echo "Number of times $index appears is "${dict2[$index]}
+        percent=`echo ${dict2[$index]} $n | awk '{print $1/$2}'`
+        percentile=`echo $percent 100 | awk '{print $1*$2}'`
+        echo "The percentage of $index is "$percentile
+done
